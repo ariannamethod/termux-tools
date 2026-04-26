@@ -1,41 +1,43 @@
-# termux-tools
+# termux-tools (metaharmonix edition)
 
-Some scripts and small programs that are packaged into termux's
-termux-tools package.
+Fork of [termux/termux-tools](https://github.com/termux/termux-tools) for the
+**metaharmonix** phone runtime — a stripped-to-the-bone Termux variant
+shipped with `notorch` and `aml` (the Arianna Method language) preinstalled,
+aimed at on-device training and inference rather than general-purpose
+mobile shell use.
+
+This repository keeps the original tool surface (`termux-info`, `pkg`,
+`login`, `chsh`, the `motd*` family, etc.) so packaging contracts with
+`termux-app` and `termux-packages` stay intact. What changes here is
+identity, defaults, and a small amount of integration with the
+metaharmonix runtime:
+
+* MOTDs greet the user as a metaharmonix shell, not a generic Termux one.
+* `termux-info` reports presence and versions of `notorch`, `aml`, and the
+  active `BLAS` backend — the things that actually matter for on-device
+  training.
+* Documentation pointers go to the metaharmonix umbrella, not termux.dev.
+
+Everything else (script names, install paths, autotools build) is
+deliberately left untouched in this first pass — see the umbrella repo
+[`ariannamethod/metaharmonix`](https://github.com/ariannamethod/metaharmonix)
+for the wider stripping plan.
 
 ## Mirrors
 
-The mirrors/ directory contains files with information about all the termux mirrors, group by different parts of the world. To add a new mirror, open a pull request to add a new file in the appropriate directory.
+The `mirrors/` directory keeps the upstream Termux mirror set unchanged for
+now. metaharmonix will publish its own mirror entries here once the package
+build infrastructure (`termux-packages` fork) is wired up.
 
-The file should be named after the base url of the repository, for example packages.termux.dev, and the content as follows:
-
-```
-# This file is sourced by pkg
-# Mirror by <username or short name of mirror owner>. Hosted in <city>, <country>.
-# <username longer name of mirror owner> : <url with more information about mirror or its owner>
-# <Longer description, for example detailing location, sync period, mirror bandwidth, ipv6 capability and other relevant info. Can be multiple sentences.>
-WEIGHT=1
-MAIN="<url to termux-main repo>"
-ROOT="<url to termux-root repo>"
-X11="<url to termux-x11 repo>"
-```
-
-where text within <> should be replaced. A fully filled in example is:
+## Build
 
 ```
-# This file is sourced by pkg
-# Mirror by ACC. Hosted in Umeå, Sweden.
-# Academic Computer Club in Umeå | https://accum.se
-# Hosted in Umeå, Sweden. Updated every four hours.
-WEIGHT=1
-MAIN="https://mirror.accum.se/mirror/termux.dev/termux-main"
-ROOT="https://mirror.accum.se/mirror/termux.dev/termux-root"
-X11="https://mirror.accum.se/mirror/termux.dev/termux-x11"
+./autogen.sh
+./configure --prefix=/data/data/com.termux/files/usr
+make
+make install
 ```
 
-The commented header lines are used as follows:
+## License
 
-* First line `# This file is sourced by pkg` is just for general information and not used for anything.  
-* Second line is used verbatim in pkg and presented to user as mirror description. Should hence be kept short.  
-* Third and fourth lines contains the name, url and general information that will be printed in generated wiki page decribing all mirrors.  
-
+GPLv3, inherited from upstream termux-tools. See `COPYING`.

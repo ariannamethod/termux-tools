@@ -108,7 +108,38 @@ unsupported
 "
 fi
 
-output+="Packages CPU architecture:
+metaharmonix_runtime() {
+	# Report presence and version of the metaharmonix on-device runtime:
+	#   notorch  — C tensor / training library (the thing that actually trains)
+	#   aml      — Arianna Method language compiler / runtime
+	#   BLAS     — backend used by notorch for matmul (OpenBLAS / Accelerate / none)
+
+	local notorch_v aml_v blas_v
+	if command -v notorch >/dev/null 2>&1; then
+		notorch_v="$(notorch --version 2>/dev/null | head -n1)"
+		[ -z "$notorch_v" ] && notorch_v="installed (no --version)"
+	else
+		notorch_v="not installed"
+	fi
+	if command -v aml >/dev/null 2>&1; then
+		aml_v="$(aml --version 2>/dev/null | head -n1)"
+		[ -z "$aml_v" ] && aml_v="installed (no --version)"
+	else
+		aml_v="not installed"
+	fi
+	if command -v pkg-config >/dev/null 2>&1 && pkg-config --exists openblas 2>/dev/null; then
+		blas_v="openblas $(pkg-config --modversion openblas 2>/dev/null)"
+	else
+		blas_v="none detected (notorch will fall back to pure C)"
+	fi
+	echo "notorch:  ${notorch_v}"
+	echo "aml:      ${aml_v}"
+	echo "BLAS:     ${blas_v}"
+}
+
+output+="metaharmonix runtime:
+$(metaharmonix_runtime)
+Packages CPU architecture:
 $(
 	if [ "$TERMUX_APP_PACKAGE_MANAGER" = "apt" ]; then
 		dpkg --print-architecture
