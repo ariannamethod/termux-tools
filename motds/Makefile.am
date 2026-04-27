@@ -43,10 +43,12 @@ $(eval $(call process-rule,motd.sh))
 motd:
 	@echo "Creating motd file"
 
-	@echo "Welcome to metaharmonix." > motd
-	@echo "A phone runtime for on-device training and inference." >> motd
+	@echo "Welcome to Termux!" > motd
 	@echo "" >> motd
-	@echo "Umbrella:  https://github.com/ariannamethod/metaharmonix" >> motd
+	@echo "Docs:       https://termux.dev/docs" >> motd
+	@echo "Donate:     https://termux.dev/donate" >> motd
+	@echo "Community:  https://termux.dev/community" >> motd
+
 	@echo "" >> motd
 	@echo "Working with packages:" >> motd
 	@echo "" >> motd
@@ -56,10 +58,14 @@ motd:
 
     ifeq ($(TERMUX_PACKAGE_MANAGER),apt)
 		@echo "" >> motd
-		@echo "Repository management:" >> motd
+		@echo "Subscribing to additional repositories:" >> motd
 		@echo "" >> motd
-		@echo " - Reset:   termux-change-repo" >> motd
+		@echo " - Root:    pkg install root-repo" >> motd
+		@echo " - X11:     pkg install x11-repo" >> motd
+		@echo "" >> motd
+		@echo "For fixing any repository issues," >> motd
+		@echo "try 'termux-change-repo' command." >> motd
     endif
 
 	@echo "" >> motd
-	@echo "Run 'termux-info' to see notorch / aml / BLAS status." >> motd
+	@echo "Report issues at https://termux.dev/issues" >> motd
